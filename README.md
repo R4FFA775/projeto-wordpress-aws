@@ -86,7 +86,21 @@ A seguir, as regras para cada componente:
 
 ### Etapa 3: Provisionamento do Banco de Dados (RDS)
 
-O banco de dados da aplicação será provisionado utilizando o Amazon RDS. A instância deve ser alocada em uma sub-rede privada para garantir que não seja acessível publicamente.
+O banco de dados da aplicação será provisionado utilizando o Amazon RDS. Ele deve ser alocado em sub-redes privadas para garantir que não seja acessível publicamente.
+
+* **Grupo de Sub-redes (Subnet Group):** Antes de criar a instância, é necessário criar um "Grupo de sub-redes" no painel do RDS. Este grupo deve conter as sub-redes privadas da nossa VPC onde o banco de dados poderá operar.
+* **Modelo de Implantação:** Para este projeto, foi utilizada a opção **Implantação de banco de dados Single-AZ**, que é ideal para ambientes de desenvolvimento e está inclusa no nível gratuito da AWS.
+* **Configurações da Instância:** Durante a criação, é fundamental definir:
+    * Um **nome inicial para o banco de dados**.
+    * Um **nome de usuário** (master username) e uma **senha** (master password) seguros.
+    * A **VPC** correta (a que criamos na Etapa 1).
+    * O **Grupo de Segurança** (Security Group) do RDS, que definimos na Etapa 2.
+    * Garantir que a opção de **Acesso Público** esteja desabilitada.
+
+<p align="center">
+  <img src="img/imagens_banco_dados.png" alt="Tela de seleção do modelo de implantação do RDS.">
+  <br>Tela de seleção do modelo de implantação do RDS.
+</p>
 
 ### Etapa 4: Criação do Sistema de Arquivos (EFS)
 
@@ -124,6 +138,13 @@ O Auto Scaling Group (ASG) é o serviço responsável por automatizar o provisio
 
 * **Configuração de Rede:** O ASG deve ser configurado para lançar instâncias nas sub-redes privadas da VPC.
 * **Integração com o Load Balancer:** O ASG deve ser anexado ao Application Load Balancer. Para isso, é necessário selecionar o **Grupo de Destino (Target Group) correto**, que neste projeto é o **`TG-wordpress`**. O Target Group é usado pelo ALB para rotear o tráfego para as instâncias registradas.
+* **Contagem de Instâncias:** Os limites de escalabilidade foram definidos da seguinte forma:
+    * **Capacidade mínima:** 2
+    * **Capacidade máxima:** 4
+* **Política de Dimensionamento:** Foi configurada uma política de **"dimensionamento com monitoramento do objetivo" (Target Tracking Policy)**.
+    * **Métrica:** Média de utilização da CPU.
+    * **Valor de destino:** 50%.
+    * **Aquecimento da instância:** 300 segundos.
 
 <p align="center">
   <img src="img/config_auto-scaling.png" alt="Seleção da VPC e sub-redes privadas para o Auto Scaling Group.">
