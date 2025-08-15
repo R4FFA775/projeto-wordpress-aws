@@ -14,6 +14,7 @@ O objetivo deste projeto é implantar uma infraestrutura para o WordPress na AWS
 * **Amazon EFS (Elastic File System):** Como sistema de arquivos compartilhado para os dados do WordPress.
 * **Application Load Balancer (ALB):** Para distribuir o tráfego de entrada entre as instâncias.
 * **Auto Scaling Group (ASG):** Para garantir a escalabilidade e a recuperação automática das instâncias.
+* **AWS IAM (Identity and Access Management):** Para o gerenciamento seguro de acessos e permissões.
 
 ## Guia de Implementação
 
@@ -110,7 +111,7 @@ Um Launch Template será configurado para servir como um modelo padronizado para
     * **Tipo de Instância:** `t2.micro`.
     * **Rede e Segurança:** A configuração deve associar as instâncias à VPC e ao Grupo de Segurança da EC2 (criado na Etapa 2).
     * **IP Público:** A atribuição automática de IP público deve ser **desativada**.
-* **Script de Inicialização (User-data):** Um script de bootstrap deve ser inserido para automatizar a instalação e configuração do WordPress na inicialização da instância. *(Aguardando o script para adicionar aqui)*.
+* **Script de Inicialização (User-data):** O script de bootstrap utilizado para automatizar a instalação está disponível no arquivo **[`user-data.sh`](user-data.sh)** neste repositório.
 
 <p align="center">
   <img src="img/Config_modelo%20de%20execucao.png" alt="Seleção do Grupo de Segurança no Launch Template.">
